@@ -105,6 +105,18 @@
       .platform.macos .platform-icon { background: hsl(24 70% 55% / 0.12); }
       .platform.linux .platform-icon { background: hsl(25 40% 50% / 0.12); }
       .platform.windows .platform-icon { background: hsl(220 50% 50% / 0.12); }
+      .platform.phone .platform-icon { background: hsl(150 35% 45% / 0.12); }
+
+      /* The phone card only appears on a phone; desktop visitors never see it. */
+      .platform.phone { display: none; }
+      .platform.phone.recommended { display: block; }
+      .platform-note {
+        padding: 0 20px 14px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .download-links a[hidden] { display: none; }
 
       .platform-name {
         font-size: 15px;
@@ -181,9 +193,25 @@
     <main class="page">
       <p class="title">Nym Desktop</p>
       <h1>Download</h1>
-      <p class="subtitle">Version 0.1.45</p>
+      <p class="subtitle">Version 0.1.46</p>
 
       <div class="platforms">
+        <section class="platform phone" data-platform="phone">
+          <div class="platform-header">
+            <div class="platform-label">
+              <div class="platform-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%237FC8A0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='2' width='12' height='20' rx='2.5'/%3E%3Cpath d='M11 18h2'/%3E%3C/svg%3E" alt="" /></div>
+              <span class="platform-name">On your phone</span>
+            </div>
+            <span class="platform-tag">This device</span>
+          </div>
+          <p class="platform-note">These downloads are for a Mac, Windows or Linux computer. On this phone, use Nym here:</p>
+          <div class="download-links">
+            <a href="https://app.usenym.com" data-os="web">
+              <div><span class="link-name">Open Nym on this phone</span><br><span class="link-meta">In your browser, nothing to install</span></div>
+              <span class="link-arrow">&rarr;</span>
+            </a>
+          </div>
+        </section>
         <section class="platform macos" data-platform="macos">
           <div class="platform-header">
             <div class="platform-label">
@@ -194,19 +222,19 @@
           </div>
           <div class="download-links">
             <a href="https://github.com/MetonymousAI/nym-desktop-releases/releases/latest/download/Nym-macOS-arm64.dmg">
-              <div><span class="link-name">macOS installer</span><br><span class="link-meta">181.0 MB &middot; Apple silicon</span></div>
+              <div><span class="link-name">macOS installer</span><br><span class="link-meta">188.8 MB &middot; Apple silicon</span></div>
               <span class="link-arrow">&rarr;</span>
             </a>
             <a href="https://github.com/MetonymousAI/nym-desktop-releases/releases/latest/download/Nym-macOS-x64.dmg">
-              <div><span class="link-name">macOS installer</span><br><span class="link-meta">188.2 MB &middot; Intel</span></div>
+              <div><span class="link-name">macOS installer</span><br><span class="link-meta">196.1 MB &middot; Intel</span></div>
               <span class="link-arrow">&rarr;</span>
             </a>
             <a href="https://github.com/MetonymousAI/nym-desktop-releases/releases/latest/download/Nym-macOS-arm64.zip">
-              <div><span class="link-name">macOS app (zip)</span><br><span class="link-meta">180.4 MB &middot; Apple silicon</span></div>
+              <div><span class="link-name">macOS app (zip)</span><br><span class="link-meta">188.2 MB &middot; Apple silicon</span></div>
               <span class="link-arrow">&rarr;</span>
             </a>
             <a href="https://github.com/MetonymousAI/nym-desktop-releases/releases/latest/download/Nym-macOS-x64.zip">
-              <div><span class="link-name">macOS app (zip)</span><br><span class="link-meta">187.7 MB &middot; Intel</span></div>
+              <div><span class="link-name">macOS app (zip)</span><br><span class="link-meta">195.5 MB &middot; Intel</span></div>
               <span class="link-arrow">&rarr;</span>
             </a>
           </div>
@@ -221,7 +249,7 @@
           </div>
           <div class="download-links">
             <a href="https://github.com/MetonymousAI/nym-desktop-releases/releases/latest/download/Nym-Windows-x64-Setup.exe">
-              <div><span class="link-name">Installer (.exe)</span><br><span class="link-meta">148.5 MB</span></div>
+              <div><span class="link-name">Installer (.exe)</span><br><span class="link-meta">153.5 MB</span></div>
               <span class="link-arrow">&rarr;</span>
             </a>
           </div>
@@ -236,11 +264,11 @@
           </div>
           <div class="download-links">
             <a href="https://github.com/MetonymousAI/nym-desktop-releases/releases/latest/download/Nym-Linux-x86_64.AppImage">
-              <div><span class="link-name">AppImage</span><br><span class="link-meta">179.9 MB &middot; Portable</span></div>
+              <div><span class="link-name">AppImage</span><br><span class="link-meta">187.8 MB &middot; Portable</span></div>
               <span class="link-arrow">&rarr;</span>
             </a>
             <a href="https://github.com/MetonymousAI/nym-desktop-releases/releases/latest/download/Nym-Linux-amd64.deb">
-              <div><span class="link-name">.deb package</span><br><span class="link-meta">138.5 MB &middot; Debian, Ubuntu</span></div>
+              <div><span class="link-name">.deb package</span><br><span class="link-meta">143.4 MB &middot; Debian, Ubuntu</span></div>
               <span class="link-arrow">&rarr;</span>
             </a>
           </div>
@@ -254,14 +282,28 @@
     <script>
       (() => {
         const ua = navigator.userAgent || "";
+        // Phones first: iOS user agents say "like Mac OS X" and Android ones say "Linux", so the
+        // desktop tests below would otherwise tag a desktop installer as this phone's.
+        // iPadOS reports a Mac user agent; touch points tell it apart from a real Mac.
+        const ios = /iPhone|iPad|iPod/i.test(ua) ||
+          (/Macintosh/i.test(ua) && (navigator.maxTouchPoints || 0) > 1);
+        const android = /Android/i.test(ua);
         let p = null;
-        if (/Windows/i.test(ua)) p = "windows";
+        if (ios || android) p = "phone";
+        else if (/Windows/i.test(ua)) p = "windows";
         else if (/Macintosh|Mac OS X/i.test(ua)) p = "macos";
         else if (/Linux/i.test(ua)) p = "linux";
         if (!p) return;
         const card = document.querySelector(`.platform[data-platform="${p}"]`);
         const grid = document.querySelector(".platforms");
         if (!card || !grid) return;
+        if (p === "phone") {
+          // Keep only the rows for this phone: the store row for its own OS and the web app.
+          const os = ios ? "ios" : "android";
+          for (const link of card.querySelectorAll("a[data-os]")) {
+            link.hidden = link.dataset.os !== os && link.dataset.os !== "web";
+          }
+        }
         card.classList.add("recommended");
         grid.prepend(card);
       })();
